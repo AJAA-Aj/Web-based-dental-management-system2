@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DentalCare Pro — Login</title>
+  <style>
+    :root{
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --accent:#0ea5a4;
+      --muted:#6b7280;
+      --danger:#dc2626;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#eaf9f8 0%,var(--bg) 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:100%;
+      max-width:520px;
+      background:var(--card);
+      border-radius:12px;
+      box-shadow:0 8px 30px rgba(16,24,40,0.08);
+      padding:28px;
+      box-sizing:border-box;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .logo{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#06b6d4,#0ea5a4);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:700;
+      font-size:18px;
+      letter-spacing:0.5px;
+      box-shadow:0 6px 18px rgba(14,165,164,0.18);
+      flex:0 0 56px;
+    }
+    h1{font-size:20px;margin:0}
+    p.lead{margin:8px 0 18px;color:var(--muted);font-size:14px}
+    form{display:grid;gap:12px}
+    label{font-size:13px;color:#111827}
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid #e6e9ef;
+      border-radius:8px;
+      font-size:14px;
+      box-sizing:border-box;
+      background:#fff;
+    }
+    .actions{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:6px;
+    }
+    button{
+      background:var(--accent);
+      color:white;
+      border:0;
+      padding:10px 14px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .create{
+      text-decoration:none;
+      color:var(--accent);
+      font-weight:600;
+      cursor:pointer;
+    }
+    .error{color:var(--danger);font-size:13px;margin-top:6px}
+    .hidden{display:none}
+    @media (max-width:480px){
+      .card{padding:18px}
+      .logo{width:48px;height:48px;font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="loginTitle">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">DC</div>
+      <div>
+        <h1 id="loginTitle">DentalCare Pro</h1>
+        <p class="lead">Secure login for DentalCare Pro — web-based dental management for patient records, appointments, billing, and clinical workflows</p>
+      </div>
+    </div>
+
+    <!-- Login form -->
+    <form id="loginForm" autocomplete="off" novalidate>
+      <!-- browser autofill mitigation: hidden dummy fields placed before real inputs -->
+      <input type="text" name="no_autofill_username" id="dummyUser" style="display:none" autocomplete="username">
+      <input type="password" name="no_autofill_password" id="dummyPass" style="display:none" autocomplete="new-password">
+
+      <div>
+        <label for="username">Username</label>
+        <!-- use autocomplete=off and a nonstandard name to reduce autofill; script also clears values on load -->
+        <input id="username" name="login_user" type="text" autocomplete="off" inputmode="text" required />
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <!-- new-password hints browser not to fill an existing saved password; additional JS clears value -->
+        <input id="password" name="login_pass" type="password" autocomplete="new-password" required minlength="1" />
+      </div>
+
+      <div>
+        <label for="usertype">User Type</label>
+        <select id="usertype" name="usertype" autocomplete="off" required>
+          <option value="">Select user type</option>
+          <option value="patient">Patient</option>
+          <option value="dentist">Dentist</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <div style="display:flex;flex-direction:column;">
+          <button type="submit" id="loginBtn">Login</button>
+          <div id="loginError" class="error hidden" aria-live="polite"></div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="help">No account?</div>
+          <a class="create" id="showCreate" href="#" role="button">Create account</a>
+        </div>
+      </div>
+    </form>
+
+    <!-- Create account form (hidden by default) -->
+    <form id="createForm" class="hidden" autocomplete="off" novalidate>
+      <input type="text" name="no_autofill_newuser" style="display:none" autocomplete="username">
+      <input type="password" name="no_autofill_newpass" style="display:none" autocomplete="new-password">
+
+      <div>
+        <label for="newUsername">Create username</label>
+        <input id="newUsername" name="newUsername" type="text" autocomplete="off" required />
+      </div>
+
+      <div>
+        <label for="newEmail">Enter Gmail account</label>
+        <input id="newEmail" name="newEmail" type="email" placeholder="you@gmail.com" autocomplete="off" required pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" />
+      </div>
+
+      <div>
+        <label for="newPassword">Enter password</label>
+        <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" required minlength="6" />
+      </div>
+
+      <div>
+        <label for="confirmPassword">Confirm password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required minlength="6" />
+      </div>
+
+      <div class="actions">
+        <div style="display:flex;flex-direction:column;">
+          <button type="submit" id="createBtn">Create account</button>
+          <div id="createError" class="error hidden" aria-live="polite"></div>
+        </div>
+
+        <div style="text-align:right">
+          <div class="help">Already have an account?</div>
+          <a class="create" id="backToLogin" href="#" role="button">Back to Login</a>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    (function(){
+      // Clear and disable autofill as best-effort: reset form, clear values, remove focusable dummy fields
+      function resetForms(){
+        // brief delay helps against some browser autofill heuristics
+        setTimeout(() => {
+          const forms = [document.getElementById('loginForm'), document.getElementById('createForm')];
+          forms.forEach(f => {
+            try { f.reset(); } catch(e){}
+            const inputs = f.querySelectorAll('input, select');
+            inputs.forEach(i => {
+              // clear values and blur
+              i.value = '';
+              i.blur();
+            });
+          });
+          // hide dummy fields from focus
+          document.getElementById('dummyUser').setAttribute('aria-hidden','true');
+          document.getElementById('dummyPass').setAttribute('aria-hidden','true');
+        }, 50);
+      }
+
+      // Immediately attempt to reset on load
+      window.addEventListener('load', resetForms);
+
+      const loginForm = document.getElementById('loginForm');
+      const createForm = document.getElementById('createForm');
+      const showCreate = document.getElementById('showCreate');
+      const backToLogin = document.getElementById('backToLogin');
+      const loginError = document.getElementById('loginError');
+      const createError = document.getElementById('createError');
+
+      function showCreateForm(){
+        loginForm.classList.add('hidden');
+        createForm.classList.remove('hidden');
+        clearErrors();
+        createForm.querySelectorAll('input,select').forEach(i => i.value = '');
+      }
+
+      function showLoginForm(){
+        createForm.classList.add('hidden');
+        loginForm.classList.remove('hidden');
+        clearErrors();
+        loginForm.querySelectorAll('input,select').forEach(i => i.value = '');
+      }
+
+      showCreate.addEventListener('click', function(e){
+        e.preventDefault();
+        showCreateForm();
+      });
+      backToLogin.addEventListener('click', function(e){
+        e.preventDefault();
+        showLoginForm();
+      });
+
+      function clearErrors(){
+        loginError.textContent = '';
+        createError.textContent = '';
+        loginError.classList.add('hidden');
+        createError.classList.add('hidden');
+      }
+
+      // Enforce hardcoded credentials: username '111', password '111', usertype must be 'patient'
+      loginForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        clearErrors();
+        const username = (loginForm.querySelector('[name="login_user"]').value || '').trim();
+        const password = (loginForm.querySelector('[name="login_pass"]').value || '').trim();
+        const usertype = (loginForm.querySelector('[name="usertype"]').value || '').trim();
+
+        if(!username){ showLoginError('Please enter your username'); return; }
+        if(!password){ showLoginError('Please enter your password'); return; }
+        if(!usertype){ showLoginError('Please choose a user type'); return; }
+
+        if(username === '111' && password === '111' && usertype === 'patient'){
+          // navigate to home.html
+          window.location.href = 'home.html';
+        } else {
+          showLoginError('Invalid username, password, or user type');
+          // clear password field
+          const pw = loginForm.querySelector('[name="login_pass"]');
+          pw.value = '';
+          pw.focus();
+        }
+      });
+
+      function showLoginError(msg){
+        loginError.textContent = msg;
+        loginError.classList.remove('hidden');
+      }
+
+      // Create account submit -> simple validation then navigate to home.html (demo)
+      createForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        clearErrors();
+        const newUsername = (createForm.newUsername.value || '').trim();
+        const newEmail = (createForm.newEmail.value || '').trim();
+        const newPassword = createForm.newPassword.value;
+        const confirmPassword = createForm.confirmPassword.value;
+
+        if(!newUsername){ showCreateError('Please enter a username'); return; }
+
+        const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        if(!gmailPattern.test(newEmail)){ showCreateError('Please enter a valid Gmail address'); return; }
+
+        if(newPassword.length < 6){ showCreateError('Password must be at least 6 characters'); return; }
+        if(newPassword !== confirmPassword){ showCreateError('Passwords do not match'); return; }
+
+        // demo: navigate to home.html
+        window.location.href = 'home.html';
+      });
+
+      function showCreateError(msg){
+        createError.textContent = msg;
+        createError.classList.remove('hidden');
+      }
+
+      // Extra: attempt to prevent password managers offering stored password (best-effort)
+      // Do not rely on this as browsers control autofill behavior.
+      document.querySelectorAll('input[type="password"]').forEach(pw => {
+        pw.addEventListener('focus', function(){
+          // clear value again when focused
+          pw.value = '';
+        });
+      });
+
+      // Accessibility: allow Enter/Space to activate links used as buttons
+      [showCreate, backToLogin].forEach(el=>{
+        el.addEventListener('keydown', function(e){
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
