@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DentalCare Pro — Home</title>
+  <style>
+    :root{
+      --bg:#f7fdfd;
+      --card:#ffffff;
+      --accent:#0ea5a4;
+      --muted:#6b7280;
+      --shadow: rgba(12,18,24,0.06);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Helvetica Neue";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:linear-gradient(180deg,#f0fdfa 0%,var(--bg) 100%);
+      color:#07252a;
+      overflow-x:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      width:300px;
+      max-width:85vw;
+      background:var(--card);
+      padding:20px 18px;
+      box-shadow: 6px 0 30px var(--shadow);
+      position:fixed;
+      left:0;
+      top:0;
+      bottom:0;
+      transform:translateX(-110%);
+      transition:transform 260ms ease;
+      z-index:60;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .sidebar.open{
+      transform:translateX(0);
+    }
+
+    /* Overlaid close X that sits on top of sidebar content */
+    .sidebar .close-x{
+      position:absolute;
+      right:12px;
+      top:12px;
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:rgba(0,0,0,0.06);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      border:0;
+      font-weight:800;
+      color:#083136;
+      z-index:70;
+      transition:background 140ms ease, transform 120ms ease;
+    }
+    .sidebar .close-x:active{ transform:scale(0.96) }
+
+    .sidebar .account{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:10px;
+    }
+    .avatar{
+      width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#0ea5a4);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;
+      box-shadow:0 6px 14px rgba(14,165,164,0.12);
+      flex:0 0 56px;
+    }
+    .acct-info .name{font-weight:800}
+    .acct-info .role{font-size:13px;color:var(--muted)}
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:6px;
+    }
+    .nav a{
+      text-decoration:none;
+      color:#083136;
+      padding:10px 12px;
+      border-radius:8px;
+      font-weight:700;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .nav a:hover{background:rgba(14,165,164,0.06)}
+
+    /* Overlay behind sidebar */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.28);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 220ms ease;
+      z-index:50;
+    }
+    .overlay.visible{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    /* Corner toggle (hamburger) fixed in absolute corner */
+    .corner-toggle{
+      position:fixed;
+      left:12px;
+      top:12px;
+      width:46px;
+      height:46px;
+      border-radius:10px;
+      background:var(--card);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 20px rgba(12,18,24,0.08);
+      border:0;
+      cursor:pointer;
+      z-index:80; /* on top when closed */
+      transition:transform 140ms ease, background 120ms ease, opacity 180ms ease;
+    }
+    .corner-toggle:active{ transform:scale(0.98) }
+
+    .corner-toggle .bar{
+      width:20px;
+      height:2px;
+      background:#083136;
+      border-radius:2px;
+      display:block;
+      position:relative;
+    }
+    .corner-toggle .bar::before,
+    .corner-toggle .bar::after{
+      content:'';
+      position:absolute;
+      left:0;
+      width:20px;
+      height:2px;
+      background:#083136;
+      border-radius:2px;
+      transition:transform 200ms ease, opacity 200ms ease;
+    }
+    .corner-toggle .bar::before{ top:-6px }
+    .corner-toggle .bar::after{ top:6px }
+
+    .corner-toggle[aria-expanded="true"] .bar{
+      background:transparent;
+    }
+    .corner-toggle[aria-expanded="true"] .bar::before{
+      transform:rotate(45deg) translate(3px,3px);
+    }
+    .corner-toggle[aria-expanded="true"] .bar::after{
+      transform:rotate(-45deg) translate(3px,-3px);
+    }
+
+    /* Hide the corner toggle while sidebar is open (no overlay over sidebar) */
+    .corner-toggle.hidden{
+      opacity:0;
+      pointer-events:none;
+      transform:translateX(-40px) scale(0.98);
+      z-index:10;
+    }
+
+    /* Main content */
+    .main{
+      margin:0 auto;
+      padding:48px 24px;
+      max-width:980px;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:28px;
+      /* leave space for footer */
+      padding-bottom:90px;
+    }
+    .top-center{text-align:center}
+    .site-logo{
+      width:96px;height:96px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#06b6d4,#0ea5a4);color:white;font-weight:900;font-size:28px;box-shadow:0 8px 24px rgba(14,165,164,0.12);
+      margin-bottom:12px;
+    }
+    .site-title{font-size:22px;font-weight:900;margin:6px 0}
+    .site-desc{color:var(--muted);max-width:720px;margin:0 auto;font-size:15px}
+    .site-address{margin-top:8px;color:#054045;font-weight:700}
+
+    .cta-wrap{display:flex;align-items:center;justify-content:center;margin-top:8px}
+    .btn{
+      background:var(--accent);
+      color:white;border:0;padding:14px 22px;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;
+      box-shadow:0 10px 30px rgba(14,165,164,0.12);
+    }
+
+    /* Footer */
+    footer.site-footer{
+      width:100%;
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px 12px;
+      color:var(--muted);
+      font-size:13px;
+      position:fixed;
+      left:0;
+      bottom:0;
+      z-index:20;
+      pointer-events:auto;
+      backdrop-filter: blur(4px);
+    }
+
+    @media (max-width:520px){
+      .corner-toggle{left:8px;top:8px}
+      .site-logo{width:76px;height:76px}
+      .main{padding:28px 16px;padding-bottom:110px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Corner toggle button -->
+  <button class="corner-toggle" id="cornerToggle" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+    <span class="bar" aria-hidden="true"></span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar" aria-hidden="true" tabindex="-1" aria-label="Sidebar">
+    <!-- overlaid X placed inside sidebar so it appears over content -->
+    <button class="close-x" id="closeX" aria-label="Close menu">✕</button>
+
+    <div class="account" role="group" aria-label="Account">
+      <div class="avatar" aria-hidden="true">DC</div>
+      <div class="acct-info">
+        <div class="name">Dr. Rivera</div>
+        <div class="role">Dentist • Sunrise Dental</div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Main menu">
+      <a href="#">Account</a>
+      <a href="#">Appointments</a>
+      <a href="#">Patients</a>
+      <a href="#">History</a>
+      <a href="#">Settings</a>
+      <a href="#">Billing</a>
+      <a href="#">Help</a>
+    </nav>
+
+    <div style="margin-top:auto;font-size:13px;color:var(--muted)">
+      <div><strong>Clinic</strong></div>
+      <div>Sunrise Dental</div>
+      <div style="margin-top:8px">Status: <strong style="color:#059669">Open</strong></div>
+    </div>
+  </aside>
+
+  <!-- overlay -->
+  <div class="overlay" id="overlay" aria-hidden="true" tabindex="-1"></div>
+
+  <!-- Main content -->
+  <main class="main" id="mainContent">
+    <div class="top-center" role="banner">
+      <div class="site-logo" aria-hidden="true">DC</div>
+      <div class="site-title">DentalCare Pro</div>
+      <p class="site-desc">Web-based dental management system for clinics: patient records, appointments, billing, and secure clinical workflows.</p>
+      <div class="site-address">123 Sunrise Ave, Barangay Salud, Sibalom, Antique</div>
+    </div>
+
+    <section class="cta-wrap" aria-label="Primary action">
+      <button class="btn" id="requestBtn">Request Appointment</button>
+    </section>
+  </main>
+
+  <!-- Footer with copyright -->
+  <footer class="site-footer" role="contentinfo">
+    © <span id="year"></span> <strong>DentalCare Pro</strong>. All rights reserved.
+  </footer>
+
+  <script>
+    (function(){
+      // Copyright year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      const corner = document.getElementById('cornerToggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const closeX = document.getElementById('closeX');
+
+      function open(){
+        sidebar.classList.add('open');
+        sidebar.setAttribute('aria-hidden','false');
+        corner.setAttribute('aria-expanded','true');
+        overlay.classList.add('visible');
+        overlay.setAttribute('aria-hidden','false');
+        // hide corner toggle so it doesn't hover in front of sidebar
+        corner.classList.add('hidden');
+        // focus the close button so keyboard users can easily close
+        closeX.focus();
+      }
+
+      function close(){
+        sidebar.classList.remove('open');
+        sidebar.setAttribute('aria-hidden','true');
+        corner.setAttribute('aria-expanded','false');
+        overlay.classList.remove('visible');
+        overlay.setAttribute('aria-hidden','true');
+        // show corner toggle again
+        corner.classList.remove('hidden');
+        corner.focus();
+      }
+
+      corner.addEventListener('click', function(){
+        const isOpen = sidebar.classList.contains('open');
+        if(isOpen) close(); else open();
+      });
+
+      closeX.addEventListener('click', close);
+      overlay.addEventListener('click', close);
+
+      // close on Escape
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && sidebar.classList.contains('open')) close();
+      });
+
+      // Demo request button behavior
+      document.getElementById('requestBtn').addEventListener('click', function(){
+        const name = prompt('Request appointment - enter patient name:');
+        if(!name) return;
+        const date = prompt('Preferred date and time (e.g., 2025-12-01 10:30):');
+        if(!date) return;
+        alert('Appointment requested for ' + name + ' on ' + date + '. Clinic will confirm shortly.');
+      });
+    })();
+  </script>
+</body>
+</html>
